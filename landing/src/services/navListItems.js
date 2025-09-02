@@ -14,19 +14,19 @@ export const menuItems = [
         childItems:[
             {
                 id:10,
-                item:"Web Development",
-                link:"/webdev",
+                item:"Support Technique 24/7",
+                link:"/techSupport",
                 icon:""
             },
             {
                 id:11,
-                item:"Mobile App development",
-                link:"/appdev",
+                item:"Formation des utilisateurs",
+                link:"/userTrainning",
                 icon:""
             },
             {
                 id:12,
-                item:"Software Development",
+                item:"Assistance",
                 link:"/softwaredev",
                 icon:""
             },

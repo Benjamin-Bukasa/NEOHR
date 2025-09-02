@@ -11,14 +11,18 @@ export default {
         secondary: '#c80018', // light red
         accent: '#b01313', // dark Red
         background: '#EDF2F4', // light Gray
-        fontText: '#1D1E27', // soft black
         textSecondary: '#4B5563', // Gray
+        fontText: '#1D1E27', // soft black
+        textLightMode: '#161616', // black
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
         serif: ['Merriweather', 'serif'],
         oxygen: ['Oxygen', 'sans-serif'],
         golos: ['Golos Text', 'sans-serif'],
+        Mona: ['Mona Sans', 'sans-serif'],
+        Outfit: ['Outfit', 'sans-serif'],
+        poppins: ['Poppins', 'sans-serif'],
       },
     },
     screens: {

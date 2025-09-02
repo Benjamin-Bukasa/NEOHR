@@ -8,13 +8,13 @@ export const benefits = [
     {
         id: 2,
         title: "Suivi des Performances",
-        description: "Évaluez les performances de vos agents grâce à des outils d'évaluation et de feedback intégrés, facilitant le développement professionnel.",
+        description: "Évaluez les performances de vos agents grâce à des outils d'évaluation et de feedback intégrés.",
         icon: "images/gestionPerformance.jpg"
     },
     {
         id: 3,
         title: "Gestion de Paie",
-        description: "Assurez une paie précise et ponctuelle pour vos agents avec des outils de calcul automatique des salaires, des déductions et des primes.",
+        description: "Assurez une paie précise et ponctuelle pour vos agents avec des outils de calcul automatique des salaires,etc...",
         icon: "images/gestionPaie.jpg"
     },
     {

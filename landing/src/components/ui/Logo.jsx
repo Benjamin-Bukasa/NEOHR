@@ -5,8 +5,8 @@ import { Play } from 'lucide-react';
 
 const Logo = () => {
   return (
-    <div className='font-bold text-accent text-2xl'>
-      <Link to="/home" className='flex items-center gap-0'>NeoHR <Play strokeWidth={3}/></Link>
+    <div className='font-semibold text-accent text-2xl'>
+      <Link to="/home" className='bg-gradient-to-r from-purple-700 to-red-400 bg-clip-text text-transparent'>NeoHR</Link>
     </div>
   );
 }
