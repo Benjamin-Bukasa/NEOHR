@@ -1,4 +1,4 @@
-import LoginPage from "./components/login/page"
+
 
 
 function App() {
@@ -6,7 +6,7 @@ function App() {
   
   return (
     <div className="flex min-h-svh flex-col">
-      <LoginPage />
+      {"Hello world !"}
     </div>
   )
 }
