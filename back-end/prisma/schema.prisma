@@ -4,12 +4,199 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
-generator client {
-  provider = "prisma-client-js"
-  // output   = "../generated/prisma"
-}
+// schema.prisma
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Rôles et permissions des utilisateurs
+
+enum Role {
+  ADMIN
+  MANAGER
+  USER
+}
+
+enum Permission {
+  LECTURE_SEULE
+  MODIFIER
+  SUPPRIMER
+}
+
+enum TypeAbonnement {
+  BASIC
+  PRO
+  ENTREPRISE
+}
+
+enum FrequencePaiement {
+  MENSUEL
+  ANNUEL
+}
+
+enum StatutPaiement {
+  EN_ATTENTE
+  SUCCES
+  ECHEC
+}
+
+enum CanalNotification {
+  APP
+  EMAIL
+  BOTH
+}
+
+// Table pour gérer les tokens de rafraîchissement
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
+
+
+// Modèles de données Utilsateurs et gestion
+
+// Entreprises clientes
+model Entreprise {
+  id            String        @id @default(uuid())
+  nom           String
+  siret         String?       @unique
+  adresse       String?
+  telephone     String?
+  abonnement    Abonnement?   // une seule souscription active à la fois
+  users         User[]
+  employes      Employe[]
+  equipes       Equipe[]
+  createdAt     DateTime      @default(now())
+}
+
+
+// Utilisateurs SaaS
+model User {
+  id            String           @id @default(uuid())
+  email         String           @unique
+  password      String
+  nom           String
+  prenom        String
+  role          Role             @default(USER)
+  permissions   Permission[]
+  entreprise    Entreprise       @relation(fields: [entrepriseId], references: [id])
+  entrepriseId  String
+  notifications Notification[]
+  equipes       EquipeMembre[]   // relation inverse
+  refreshTokens RefreshToken[]
+  createdAt     DateTime         @default(now())
+}
+
+// Employés gérés
+model Employe {
+  id                  String     @id @default(uuid())
+  nom                 String
+  prenom              String
+  email               String?    @unique
+  telephone           String?
+  dateNaissance       DateTime?
+  poste               String?
+  dateEmbauche        DateTime   @default(now())
+  entreprise          Entreprise @relation(fields: [entrepriseId], references: [id])
+  entrepriseId        String
+
+  // Gestion sous-traitance
+  entrepriseSousTraitant   String?
+  entrepriseAffectation    String?
+
+  createdAt           DateTime   @default(now())
+}
+
+// Abonnements des entreprises
+model Abonnement {
+  id             String           @id @default(uuid())
+  type           TypeAbonnement
+  frequence      FrequencePaiement
+  actif          Boolean          @default(true)
+  dateDebut      DateTime         @default(now())
+  dateFin        DateTime?
+  entreprise     Entreprise       @relation(fields: [entrepriseId], references: [id])
+  entrepriseId   String   @unique   // ✅ Ajout obligatoire pour One-to-One
+  paiements      Paiement[]
+}
+
+
+// Paiements effectués
+model Paiement {
+  id            String   @id @default(uuid())
+  montant       Float
+  devise        String   @default("USD")
+  statut        StatutPaiement @default(EN_ATTENTE)
+  methode       String   @default("Carte bancaire")
+  transactionId String?
+  date          DateTime @default(now())
+  abonnement    Abonnement @relation(fields: [abonnementId], references: [id])
+  abonnementId  String
+
+  facture       Facture?   // relation 1:1 optionnelle
+}
+
+// Factures liées aux paiements
+model Facture {
+  id         String   @id @default(uuid())
+  numero     String   @unique
+  urlPDF     String
+  date       DateTime @default(now())
+  paiement   Paiement @relation(fields: [paiementId], references: [id])
+  paiementId String   @unique   // obligatoire pour 1:1
+}
+
+// Notifications envoyées aux utilisateurs
+model Notification {
+  id        String   @id @default(uuid())
+  titre     String
+  contenu   String
+  canal     CanalNotification @default(APP)
+  lu        Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+}
+
+// Templates de notifications
+model NotificationTemplate {
+  id        String   @id @default(uuid())
+  nom       String   @unique
+  sujet     String
+  contenu   String
+  canal     CanalNotification @default(APP)
+  createdAt DateTime @default(now())
+}
+
+// Equipes au sein d’une entreprise
+model Equipe {
+  id          String         @id @default(uuid())
+  nom         String
+  description String?
+  entreprise  Entreprise     @relation(fields: [entrepriseId], references: [id])
+  entrepriseId String
+  membres     EquipeMembre[]
+  createdAt   DateTime       @default(now())
+}
+
+// Membres d’équipe (relation User <-> Equipe)
+model EquipeMembre {
+  id        String   @id @default(uuid())
+  equipe    Equipe   @relation(fields: [equipeId], references: [id])
+  equipeId  String
+  user      User     @relation(fields: [userId], references: [id]) 
+  userId    String
+  roleEquipe String   @default("MEMBRE")
+  dateAjout DateTime @default(now())
 }
