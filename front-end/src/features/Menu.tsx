@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { menuItems } from "../services/sidebarItems";
+import { menuItems } from "../utils/sidebarItems";
 import { Button } from "../components/ui/button";
 
 const Menu = () => {
@@ -7,8 +7,8 @@ const Menu = () => {
 
   return (
     <div className="flex flex-col gap-2">
-      {menuItems.map((item, id) => {
-        const Icon = item.icon;
+      {menuItems.map((item:string, id:number) => {
+        const Icon:string = item.icon;
         const isActive = location.pathname === item.path; // vérifie si la route est active
 
         return (
